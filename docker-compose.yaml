@@ -15,9 +15,9 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: ambassador
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root    
     volumes:
       - .dbdata:/var/lib/mysql
     ports:
       # have to use a different localport because I have mysql installed
-      - "33066:3306"
+      - "33066:3306"     # linux connect: mysql -P 33066 --protocol=tcp -u root -p
