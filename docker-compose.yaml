@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  backend:
+    build: .
+    ports:
+      # localport : dockerport
+      - "8000:8000"
+    volumes: 
+      - .:/app
+    depends_on:    # the db container runs first then backend container, we need the db to run before the backend
+      - db
+
+  db:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: ambassador
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - .dbdata:/var/lib/mysql
+    ports:
+      # have to use a different localport because I have mysql installed
+      - "33066:3306"
