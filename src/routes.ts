@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { Register, ShowOrders } from './controller/controller';
+import { Register, Login } from './controller/controller';
 
 export const routes = (router: Router) => {
   router.post('/api/admin/register', Register);
-  router.get('/api/admin/show', ShowOrders);
+  router.post('/api/admin/login', Login);
 }
