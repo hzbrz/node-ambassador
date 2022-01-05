@@ -4,3 +4,6 @@ jspm_packages/
 
 # database file
 .dbdata
+
+# environment vars
+.env
