@@ -1,8 +1,9 @@
-import express from 'express';
+import express, { application } from 'express';
 import cors from 'cors';
 import { createConnection } from 'typeorm';
 import { routes } from './routes';
 import { config } from 'dotenv';
+import cookieParser from 'cookie-parser';
 
 config();
 
@@ -14,7 +15,8 @@ config();
 */ 
 createConnection().then(() => {
   const app = express();
-
+  // middleware to parse the cookie and read the jwt in the req
+  app.use(cookieParser());
   // this is a middleware that makes sure that when we send a request to a route it is coverted to json
   app.use(express.json());
   // middleware to enable cors

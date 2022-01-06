@@ -16,7 +16,10 @@ export class User {
   @Column({ unique:true })
   email: string;
   
-  @Column()
+  // the password will not get selected/returned when we query for a user
+  @Column({
+    select: false
+  })
   password: string;
   
   @Column()

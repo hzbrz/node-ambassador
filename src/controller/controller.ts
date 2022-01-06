@@ -2,29 +2,32 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { User } from "../entity/user.entity";
 import { hash, compare } from 'bcryptjs';
-import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 
 export const Register = async (req: Request, res: Response) => {
-  const body = req.body;
-  if (body.password !== body.password_confirm) 
+  const {password, password_confirm, ...body} = req.body;
+  if (password !== password_confirm) 
     return res.status(400).send({
       message: "Passwords do not match."
     })
   
   // deconstructing so we can isolate the password from the rest of fields, should not send pass in res
-  const {password, ...user} = await getRepository(User).save({
-    first_name: body.first_name,
-    last_name: body.last_name,
-    email: body.email,
-    password: await hash(body.password, 10),
+  const user = await getRepository(User).save({
+    ...body,
+    password: await hash(password, 10),
     is_ambassador: false
   })
+
+  // so we do not send the password to the reponse
+  delete user.password;
 
   res.send(user);
 }
 
 export const Login = async (req: Request, res: Response) => {
-  const user = await getRepository(User).findOne({ email: req.body.email })
+  const user = await getRepository(User).findOne({ email: req.body.email }, {
+    select: ["id", "password"]  // manually select the password
+  })
 
   // checking is user exists and is a valid email
   if (!user)
@@ -50,5 +53,38 @@ export const Login = async (req: Request, res: Response) => {
     maxAge: 24*60*60*1000
   })
 
+  res.send({ message: 'Success' });
+}
+
+
+export const AuthenticatedUser =  async (req: Request, res: Response) => {
+  // this try-catch block is for the verify() func which throws an error after we delete the cookie in Logout
+  // meaning the user has to Login after they Logout to re-authenticate
+  try {
+    const jwt = req.cookies['jwt'];
+  
+    // decrypted the signed token
+    const payload: any = verify(jwt, process.env.SECRET_KEY);
+    
+    if (!payload) 
+      return res.status(400).send({
+        message: 'Not Authenticated'
+      })
+    
+    const user = await getRepository(User).findOne(payload.id);
+  
+    res.send(user);
+  } catch (error) {
+    return res.status(400).send({
+      message: 'Not Authenticated'
+    })
+  }
+}
+
+// Logout function we just need to remove the cookie authenticating the user
+export const Logout =  async (req: Request, res: Response) => {
+  // to delete a cookie, empty it and expire it with maxAge 0
+  res.cookie('jwt', '', { maxAge: 0 });
+  
   res.send({ message: 'Success' });
 }
