@@ -58,27 +58,7 @@ export const Login = async (req: Request, res: Response) => {
 
 
 export const AuthenticatedUser =  async (req: Request, res: Response) => {
-  // this try-catch block is for the verify() func which throws an error after we delete the cookie in Logout
-  // meaning the user has to Login after they Logout to re-authenticate
-  try {
-    const jwt = req.cookies['jwt'];
-  
-    // decrypted the signed token
-    const payload: any = verify(jwt, process.env.SECRET_KEY);
-    
-    if (!payload) 
-      return res.status(400).send({
-        message: 'Not Authenticated'
-      })
-    
-    const user = await getRepository(User).findOne(payload.id);
-  
-    res.send(user);
-  } catch (error) {
-    return res.status(400).send({
-      message: 'Not Authenticated'
-    })
-  }
+  res.send(req['user']);
 }
 
 // Logout function we just need to remove the cookie authenticating the user
