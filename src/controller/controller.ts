@@ -33,13 +33,13 @@ export const Login = async (req: Request, res: Response) => {
   if (!user)
     return res.status(400).send({
       message: 'Invalid Credentials'
-    })
+    });
   
   // validating password
   if (!await compare(req.body.password, user.password))
     return res.status(400).send({
       message: 'Invalid Credentials'
-    })
+    });
 
   // creating a test token 
   const token = sign({
@@ -67,4 +67,38 @@ export const Logout =  async (req: Request, res: Response) => {
   res.cookie('jwt', '', { maxAge: 0 });
   
   res.send({ message: 'Success' });
+}
+
+// lets the user update their info once they are authenticated
+export const UpdateInfo = async (req: Request, res: Response) => {
+  // accessing the user from the passed value of the authetication middleware
+  const user = req['user'];
+
+  const repository = getRepository(User);
+
+  // we cannot catch the updated user because it does not get returned here
+  await repository.update(user.id, req.body); 
+
+  // we find again because the user values has changed form the one gotten
+  // in the req body and we want to get the udpated values  
+  res.send(await repository.findOne(user.id));
+}
+
+// let the user update their password once they are authenticated
+export const UpdatePassword = async (req: Request, res: Response) => {
+  const user = req['user'];
+
+  if (req.body.password !== req.body.password_confirm) 
+    return res.status(400).send({
+      message: "Passwords do not match."
+    });
+  
+  // update the password here
+  await getRepository(User).update(user.id, {
+    password: await hash(req.body.password, 10)
+  });
+
+  // only the password has changed and not the user so send the user because no need to send 
+  // password with the response
+  res.send(user);
 }
