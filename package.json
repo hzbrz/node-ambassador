@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon src/index.ts",
     "seed:ambassadors": "ts-node src/seeder/ambassador.seeder.ts",
-    "seed:products": "ts-node src/seeder/product.seeder.ts"
+    "seed:products": "ts-node src/seeder/product.seeder.ts",
+    "seed:links": "ts-node src/seeder/link.seeder.ts"
   },
   "keywords": [],
   "author": "",
