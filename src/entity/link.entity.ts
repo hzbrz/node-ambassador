@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Order } from "./order.entity";
 import { Product } from "./product.entity";
 import { User } from "./user.entity";
 
@@ -26,4 +27,18 @@ export class Link{
     inverseJoinColumn: { name: 'product_id', referencedColumnName: 'id' }
   })
   product: Product[];
+
+
+  /** 
+   * One link can have multiple orders
+   * we access/ join the link table with the order table based on the link code and not a FK 
+   * we do not want to add a foreign key constraint between order and link so its set to false in the 
+   * options section of then OneToMany decorator
+  */
+  @OneToMany(() => Order, order => order.link, { createForeignKeyConstraints: false })
+  @JoinColumn({
+    referencedColumnName: 'code',
+    name: 'code'
+  })
+  orders: Order[];
 }
