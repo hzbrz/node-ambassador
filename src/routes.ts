@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { Register, Login, AuthenticatedUser, Logout, UpdateInfo, UpdatePassword } from './controller/auth.controller.';
 import { Links } from './controller/link.controller';
+import { Orders } from './controller/order.controller';
 import { CreateProduct, DeleteProduct, GetProduct, Products, UpdateProduct } from './controller/product.controller';
 import { Ambassadors } from './controller/user.controller';
 import { AuthMiddleware } from './middleware/auth.middleware';
@@ -29,4 +30,7 @@ export const routes = (router: Router) => {
 
   /** Links routes */
   router.get('/api/admin/users/:id/links', AuthMiddleware, Links);
+
+  /** Order routes */
+  router.get('/api/admin/orders', AuthMiddleware, Orders);
 }
