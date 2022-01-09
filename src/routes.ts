@@ -7,6 +7,8 @@ import { Ambassadors } from './controller/user.controller';
 import { AuthMiddleware } from './middleware/auth.middleware';
 
 export const routes = (router: Router) => {
+  
+  // Admin Endpoints
   /** Authentication routes */
   router.post('/api/admin/register', Register);
   router.post('/api/admin/login', Login);
@@ -33,4 +35,14 @@ export const routes = (router: Router) => {
 
   /** Order routes */
   router.get('/api/admin/orders', AuthMiddleware, Orders);
+
+
+  // Ambassador Endpoints
+  /** Auth routes */
+  router.post('/api/ambassador/register', Register);
+  router.post('/api/ambassador/login', Login);
+  router.get('/api/ambassador/user', AuthMiddleware, AuthenticatedUser);
+  router.post('/api/ambassador/logout', AuthMiddleware, Logout);
+  router.put('/api/ambassador/users/info', AuthMiddleware, UpdateInfo);
+  router.put('/api/ambassador/users/password', AuthMiddleware, UpdatePassword);
 }

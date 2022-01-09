@@ -15,7 +15,8 @@ export const Register = async (req: Request, res: Response) => {
   const user = await getRepository(User).save({
     ...body,
     password: await hash(password, 10),
-    is_ambassador: false
+    // we distinguish between admin and ambssador register by checking the path of the API endpoint
+    is_ambassador: req.path === '/api/ambassador/register'  // Admin = false, Ambassador = true
   })
 
   // so we do not send the password to the reponse
@@ -26,7 +27,7 @@ export const Register = async (req: Request, res: Response) => {
 
 export const Login = async (req: Request, res: Response) => {
   const user = await getRepository(User).findOne({ email: req.body.email }, {
-    select: ["id", "password"]  // manually select the password
+    select: ["id", "password", 'is_ambassador']  // specifying which fields to select with the query 
   })
 
   // checking is user exists and is a valid email
@@ -41,9 +42,20 @@ export const Login = async (req: Request, res: Response) => {
       message: 'Invalid Credentials'
     });
 
+
+  const adminLogin = req.path === '/api/admin/login';
+
+  // if the user is an ambssador the should be unauthorized to login to the Admin side
+  if (user.is_ambassador && adminLogin) 
+    return res.status(401).send({
+      message: 'Unauthorized'
+    });
+
+    
   // creating a test token 
   const token = sign({
-    id: user.id
+    id: user.id,
+    scope: adminLogin ? 'admin' : 'ambassador'   // clarifying what type of user is authenticated
   }, process.env.SECRET_KEY);
 
 

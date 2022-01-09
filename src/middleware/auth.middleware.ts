@@ -18,9 +18,20 @@ export const AuthMiddleware = async (req: Request, res: Response, next: Function
       return res.status(400).send({
         message: 'Not Authenticated'
       })
+
+    // if some part of the path matches >= 0 then ambassador route otherwise -1 = admin route
+    const is_ambassador = req.path.indexOf('api/ambassador') >= 0 
+
+    const user = await getRepository(User).findOne(payload.id);
+
+    // using the scope that is passed in the payload of the jwt we can now check what the role of the user is
+    if ((is_ambassador && payload.scope !== 'ambassador') || (!is_ambassador && payload.scope !== 'admin'))
+      return res.status(401).send({
+        message: 'Unauthorized'
+      });
     
     // passing the user from middleware to controller through the request
-    req['user'] = await getRepository(User).findOne(payload.id);
+    req['user'] = user;
 
     // instead of sending a response we just move to the next function
     next();
