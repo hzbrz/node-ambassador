@@ -3,6 +3,7 @@ import { getRepository } from "typeorm";
 import { User } from "../entity/user.entity";
 import { hash, compare } from 'bcryptjs';
 import { sign, verify } from "jsonwebtoken";
+import { Order } from "../entity/order.entity";
 
 export const Register = async (req: Request, res: Response) => {
   const {password, password_confirm, ...body} = req.body;
@@ -70,7 +71,25 @@ export const Login = async (req: Request, res: Response) => {
 
 
 export const AuthenticatedUser =  async (req: Request, res: Response) => {
-  res.send(req['user']);
+  const user = req['user'];
+
+  // if the user is an admin we just return the user
+  if (req.path === '/api/admin/user')
+    return res.send(user);
+
+  // otherwise if it is on ambassador side we need to get the orders
+  const orders = await getRepository(Order).find({
+    where: {
+      user_id: user.id,
+      completed: true
+    },
+    relations: ['order_items']   // relations is (inner-join) joining in typeorm
+  })
+
+  // for each order we sum the ambassador revenue and get a total revenue for that ambassador
+  user.revenue = orders.reduce((sum, order) => sum + order.ambassador_revenue , 0)
+
+  res.send(user);
 }
 
 // Logout function we just need to remove the cookie authenticating the user

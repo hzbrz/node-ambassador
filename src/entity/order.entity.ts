@@ -68,4 +68,9 @@ export class Order {
     // reduce returns an accumulated val of a previous val(sum) and the current val(item)
     return this.order_items.reduce((sum, item) => sum + item.admin_revenue, 0); // 0 is the initial value
   }
+
+  // getting the total of all order_item's ambassador revenue to get total ambassador revenue for an order
+  get ambassador_revenue(): number {
+    return this.order_items.reduce((sum, item) => sum + item.ambassador_revenue, 0); // 0 is the initial value
+  }
 }
