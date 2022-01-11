@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { Register, Login, AuthenticatedUser, Logout, UpdateInfo, UpdatePassword } from './controller/auth.controller.';
 import { Links } from './controller/link.controller';
 import { Orders } from './controller/order.controller';
-import { CreateProduct, DeleteProduct, GetProduct, Products, UpdateProduct } from './controller/product.controller';
+import { CreateProduct, DeleteProduct, GetProduct, ProdcutsBackend, ProdcutsFrontend, Products, UpdateProduct } from './controller/product.controller';
 import { Ambassadors } from './controller/user.controller';
 import { AuthMiddleware } from './middleware/auth.middleware';
 
@@ -45,4 +45,11 @@ export const routes = (router: Router) => {
   router.post('/api/ambassador/logout', AuthMiddleware, Logout);
   router.put('/api/ambassador/users/info', AuthMiddleware, UpdateInfo);
   router.put('/api/ambassador/users/password', AuthMiddleware, UpdatePassword);
+
+  /** Product routes */
+  // no auth middleware because this route is not private 
+  // meaning we can see this route in the frontend no matter the authentication status 
+  router.get('/api/ambassador/products/frontend', ProdcutsFrontend);
+  router.get('/api/ambassador/products/backend', ProdcutsBackend);
+
 }

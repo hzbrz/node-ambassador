@@ -4,16 +4,23 @@ import { createConnection } from 'typeorm';
 import { routes } from './routes';
 import { config } from 'dotenv';
 import cookieParser from 'cookie-parser';
+import { createClient } from 'redis';
 
 config();
 
+
+export const client = createClient({
+  url: 'redis://redis:6379'
+});
 
 /* 
   info to create the connection is gotten from ormconfig.json 
   in that file we set the "host" to the service name of the docker image and the "port" to the port 
   we are connecting mysql on inside the docker image which is 3306 (as seen on docker-compose.yaml). 
 */ 
-createConnection().then(() => {
+createConnection().then(async () => {
+  await client.connect();
+
   const app = express();
   // middleware to parse the cookie and read the jwt in the req
   app.use(cookieParser());

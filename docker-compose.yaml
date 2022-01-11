@@ -9,6 +9,7 @@ services:
       - .:/app
     depends_on:    # the db container runs first then backend container, we need the db to run before the backend
       - db
+      - redis    
 
   db:
     image: mysql:8
@@ -21,3 +22,8 @@ services:
     ports:
       # have to use a different localport because I have mysql installed
       - "33066:3306"     # linux connect: mysql -P 33066 --protocol=tcp -u root -p
+
+  redis: 
+    image: redis
+    ports: 
+      - 6379:6379

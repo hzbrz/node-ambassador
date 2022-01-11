@@ -7,3 +7,6 @@ jspm_packages/
 
 # environment vars
 .env
+
+# metadata
+src/setup.md
