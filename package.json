@@ -8,7 +8,8 @@
     "seed:ambassadors": "ts-node src/seeder/ambassador.seeder.ts",
     "seed:products": "ts-node src/seeder/product.seeder.ts",
     "seed:links": "ts-node src/seeder/link.seeder.ts",
-    "seed:orders": "ts-node src/seeder/order.seeder.ts"
+    "seed:orders": "ts-node src/seeder/order.seeder.ts",
+    "update:rankings": "ts-node src/seeder/rankings.ts"
   },
   "keywords": [],
   "author": "",

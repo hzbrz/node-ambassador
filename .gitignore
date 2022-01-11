@@ -10,3 +10,7 @@ jspm_packages/
 
 # metadata
 src/setup.md
+
+
+# vscode
+.vscode

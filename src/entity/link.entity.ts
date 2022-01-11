@@ -26,7 +26,7 @@ export class Link{
     joinColumn: { name: 'link_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'product_id', referencedColumnName: 'id' }
   })
-  product: Product[];
+  products: Product[];
 
 
   /** 
