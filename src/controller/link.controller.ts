@@ -31,7 +31,7 @@ export const CreateLink = async (req: Request, res: Response) => {
 }
 
 
-// for each link ambassador has created we want to see how much revenue it has generated
+// for each link the ambassador has created we want to see how much revenue it has generated
 export const Stats = async (req: Request, res: Response) => {
   const user = req['user']
   
@@ -50,4 +50,14 @@ export const Stats = async (req: Request, res: Response) => {
       revenue: orders.reduce((sum, order) => sum + order.ambassador_revenue , 0)
     }
   }));
+}
+
+// getting a link using the code as id
+export const GetLink = async (req: Request, res: Response) => {
+  res.send(await getRepository(Link).findOne({
+    where: {
+      code: req.params.code
+    },
+    relations: ['user', 'products']
+  }))
 }

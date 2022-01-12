@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Register, Login, AuthenticatedUser, Logout, UpdateInfo, UpdatePassword } from './controller/auth.controller.';
-import { CreateLink, Links, Stats } from './controller/link.controller';
-import { Orders } from './controller/order.controller';
+import { CreateLink, GetLink, Links, Stats } from './controller/link.controller';
+import { CreateOrder, Orders } from './controller/order.controller';
 import { CreateProduct, DeleteProduct, GetProduct, ProdcutsBackend, ProdcutsFrontend, Products, UpdateProduct } from './controller/product.controller';
 import { Ambassadors, Rankings } from './controller/user.controller';
 import { AuthMiddleware } from './middleware/auth.middleware';
@@ -56,4 +56,8 @@ export const routes = (router: Router) => {
   router.post('/api/ambassador/links', AuthMiddleware, CreateLink);
   router.get('/api/ambassador/stats', AuthMiddleware, Stats);
   router.get('/api/ambassador/rankings', AuthMiddleware, Rankings);
+
+  // Checkout Endpoints
+  router.get('/api/checkout/links/:code', GetLink);
+  router.post('/api/checkout/orders', CreateOrder);
 }
