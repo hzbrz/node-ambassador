@@ -5,6 +5,8 @@ services:
     ports:
       # localport : dockerport
       - "8000:8000"
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
     volumes: 
       - .:/app
     depends_on:    # the db container runs first then backend container, we need the db to run before the backend
@@ -27,3 +29,11 @@ services:
     image: redis
     ports: 
       - 6379:6379
+
+  # mailhog to intercept emails with nondemailer
+  mailhog:
+    image: "mailhog/mailhog"
+    container_name: "mailhog"
+    ports:
+      - 8025:8025
+      - 1025:1025
