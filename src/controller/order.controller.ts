@@ -146,7 +146,7 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
 
   const user = await getRepository(User).findOne(order.user_id);
 
-  // when we complete an order the ambassador revenue will change so we increment the rankings
+  // when we complete an order the ambassador revenue will change so we increment the revenue and update rankings
   await client.zIncrBy('rankings', order.ambassador_revenue, user.name);
 
   // setup a transporter to send emails using nodemailer
