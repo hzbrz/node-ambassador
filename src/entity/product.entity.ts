@@ -11,7 +11,7 @@ export class Product {
   @Column()
   description: string;
 
-  @Column()
+  @Column("varchar", { length: 300 })
   image: string;
 
   @Column()

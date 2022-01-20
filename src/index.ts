@@ -28,8 +28,11 @@ createConnection().then(async () => {
   app.use(express.json());
   // middleware to enable cors
   app.use(cors({
+    credentials: true, // need to allow credentials for cookie
     origin: [
-      'http://localhost:3000'
+      'http://localhost:3000',
+      'http://localhost:4000', 
+      'http://localhost:5000'
     ]
   }));
 
